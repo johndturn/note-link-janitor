@@ -1,28 +1,30 @@
-import type * as MDAST from 'mdast';
-import * as UNIST from 'unist';
-import * as is from 'unist-util-is';
+import type { Node } from 'unist';
+import type { Html, Root, Heading } from 'mdast';
+import { is } from 'unist-util-is';
 
 // Hacky type predicate here.
-function isClosingMatterNode(node: UNIST.Node): node is UNIST.Node {
-  return 'value' in node && (node as MDAST.HTML).value.startsWith('<!--');
+function isClosingMatterNode(node: Node): node is Node {
+  return 'value' in node && (node as Html).value.startsWith('<!--');
 }
 
-export default function getBacklinksBlock(tree: MDAST.Root):
-  | {
-      isPresent: true;
-      start: UNIST.Node;
-      until: UNIST.Node | null;
-    }
-  | {
-      isPresent: false;
-      insertionPoint: UNIST.Node | null;
-    } {
+type BacklinksBlockPresent = {
+  isPresent: true;
+  start: Node;
+  until: Node | null;
+};
+
+type BacklinksBlockNotPresent = {
+  isPresent: false;
+  insertionPoint: Node | null;
+};
+
+export default function getBacklinksBlock(tree: Root): BacklinksBlockPresent | BacklinksBlockNotPresent {
   const existingBacklinksNodeIndex = tree.children.findIndex(
-    (node: UNIST.Node): node is MDAST.Heading =>
+    (node: Node): node is Heading =>
       is(node, {
         type: 'heading',
         depth: 2,
-      }) && is((node as MDAST.Heading).children[0], { value: 'Backlinks' }),
+      }) && is((node as Heading).children[0], { value: 'Backlinks' }),
   );
 
   if (existingBacklinksNodeIndex === -1) {

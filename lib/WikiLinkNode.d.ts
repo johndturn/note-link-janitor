@@ -1,6 +1,6 @@
-import * as UNIST from "unist";
+import type { Node } from 'unist';
 
-export interface WikiLinkNode extends UNIST.Node {
+export interface WikiLinkNode extends Node {
   value: string;
   data: {
     alias: string;

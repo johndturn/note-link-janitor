@@ -1,56 +1,50 @@
-import * as fs from "fs";
-import * as MDAST from "mdast";
-import * as path from "path";
-import * as remark from "remark";
-import * as find from "unist-util-find";
+import * as fs from 'fs';
+import type { Root, Heading } from 'mdast';
+import * as path from 'path';
+import { remark } from 'remark';
+import { find } from 'unist-util-find';
 
-import getNoteLinks, { NoteLinkEntry } from "./getNoteLinks";
-import processor from "./processor";
+import getNoteLinks, { NoteLinkEntry } from './getNoteLinks';
+import processor from './processor';
 
-const missingTitleSentinel = { type: "missingTitle" } as const;
+const missingTitleSentinel = { type: 'missingTitle' } as const;
 
-const headingFinder = processor().use(() => tree =>
-  find(tree, { type: "heading", depth: 1 }) || missingTitleSentinel
-);
+const headingFinder = processor().use(() => tree => find(tree, { type: 'heading', depth: 1 }) || missingTitleSentinel);
 interface Note {
   title: string;
   links: NoteLinkEntry[];
   noteContents: string;
-  parseTree: MDAST.Root;
+  parseTree: Root;
 }
 
 async function readNote(notePath: string): Promise<Note> {
   const noteContents = await fs.promises.readFile(notePath, {
-    encoding: "utf-8"
+    encoding: 'utf-8',
   });
 
-  const parseTree = processor.parse(noteContents) as MDAST.Root;
+  const parseTree = processor.parse(noteContents) as Root;
   const headingNode = await headingFinder.run(parseTree);
-  if (headingNode.type === "missingTitle") {
+  if (headingNode.type === 'missingTitle') {
     throw new Error(`${notePath} has no title`);
   }
   const title = remark()
     .stringify({
-      type: "root",
-      children: (headingNode as MDAST.Heading).children
+      type: 'root',
+      children: (headingNode as Heading).children,
     })
     .trimEnd();
 
   return { title, links: getNoteLinks(parseTree), parseTree, noteContents };
 }
 
-export default async function readAllNotes(
-  noteFolderPath: string
-): Promise<{ [key: string]: Note }> {
+export default async function readAllNotes(noteFolderPath: string): Promise<{ [key: string]: Note }> {
   const noteDirectoryEntries = await fs.promises.readdir(noteFolderPath, {
-    withFileTypes: true
+    withFileTypes: true,
   });
   const notePaths = noteDirectoryEntries
-    .filter(entry => entry.isFile() && !entry.name.startsWith(".") && entry.name.endsWith(".md"))
+    .filter(entry => entry.isFile() && !entry.name.startsWith('.') && entry.name.endsWith('.md'))
     .map(entry => path.join(noteFolderPath, entry.name));
 
-  const noteEntries = await Promise.all(
-    notePaths.map(async notePath => [notePath, await readNote(notePath)])
-  );
+  const noteEntries = await Promise.all(notePaths.map(async notePath => [notePath, await readNote(notePath)]));
   return Object.fromEntries(noteEntries);
 }

@@ -1,9 +1,9 @@
-import * as MDAST from "mdast";
+import type { BlockContent } from 'mdast';
 
-import { Note } from "./Note";
+import { Note } from './Note';
 
 export default function createLinkMap(notes: Note[]) {
-  const linkMap: Map<string, Map<string, MDAST.BlockContent[]>> = new Map();
+  const linkMap: Map<string, Map<string, BlockContent[]>> = new Map();
   for (const note of notes) {
     for (const link of note.links) {
       const targetTitle = link.targetTitle;

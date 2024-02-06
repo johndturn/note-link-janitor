@@ -1,8 +1,8 @@
 // import type { BlockContent, ListItem, PhrasingContent } from 'mdast';
 import type { Root, BlockContent } from 'mdast';
 
-import getBacklinksBlock from './getBacklinksBlock';
-import processor from './processor';
+import getBacklinksBlock from './getBacklinksBlock.js';
+import processor from './processor.js';
 
 export interface BacklinkEntry {
   sourceTitle: string;

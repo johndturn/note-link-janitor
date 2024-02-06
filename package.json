@@ -4,6 +4,7 @@
   "author": "Andy Matuschak",
   "main": "out/index.js",
   "license": "MIT",
+  "type": "module",
   "devDependencies": {
     "@types/node": "^18.18.2",
     "@types/unist": "^3.0.2",
@@ -30,7 +31,8 @@
     "node": "18.18.2"
   },
   "scripts": {
-    "build": "tsc -p . --outDir dist && chmod +x dist/index.js"
+    "build": "./scripts/build.sh",
+    "backlinks": "./dist/index.js ./tmp-content"
   },
   "bin": {
     "note-link-janitor": "./dist/index.js"

@@ -4,12 +4,13 @@ import * as path from 'path';
 import { remark } from 'remark';
 import { find } from 'unist-util-find';
 
-import getNoteLinks, { NoteLinkEntry } from './getNoteLinks';
-import processor from './processor';
+import getNoteLinks, { NoteLinkEntry } from './getNoteLinks.js';
+import processor from './processor.js';
 
 const missingTitleSentinel = { type: 'missingTitle' } as const;
 
 const headingFinder = processor().use(() => tree => find(tree, { type: 'heading', depth: 1 }) || missingTitleSentinel);
+
 interface Note {
   title: string;
   links: NoteLinkEntry[];

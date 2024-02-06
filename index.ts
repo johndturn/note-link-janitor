@@ -1,17 +1,17 @@
 #!/usr/bin/env node
 
-import * as fs from "fs";
-import * as graph from "pagerank.js";
-import * as path from "path";
+import * as fs from 'fs';
+import * as graph from 'pagerank.js';
+import * as path from 'path';
 
-import createLinkMap from "./lib/createLinkMap";
-import readAllNotes from "./lib/readAllNotes";
-import updateBacklinks from "./lib/updateBacklinks";
+import createLinkMap from './lib/createLinkMap.js';
+import readAllNotes from './lib/readAllNotes.js';
+import updateBacklinks from './lib/updateBacklinks.js';
 
 (async () => {
   const baseNotePath = process.argv[2];
-  if (!baseNotePath || baseNotePath === "--help") {
-    console.log("Usage: note-link-janitor [NOTE_DIRECTORY]");
+  if (!baseNotePath || baseNotePath === '--help') {
+    console.log('Usage: note-link-janitor [NOTE_DIRECTORY]');
     return;
   }
 
@@ -26,7 +26,7 @@ import updateBacklinks from "./lib/updateBacklinks";
     }
   }
   const noteRankings: { [key: string]: number } = {};
-  graph.rank(0.85, 0.000001, function(node, rank) {
+  graph.rank(0.85, 0.000001, function (node, rank) {
     noteRankings[node] = rank;
   });
 
@@ -40,25 +40,19 @@ import updateBacklinks from "./lib/updateBacklinks";
           ? [...backlinks.keys()]
               .map(sourceTitle => ({
                 sourceTitle,
-                context: backlinks.get(sourceTitle)!
+                context: backlinks.get(sourceTitle)!,
               }))
               .sort(
-                (
-                  { sourceTitle: sourceTitleA },
-                  { sourceTitle: sourceTitleB }
-                ) =>
-                  (noteRankings[sourceTitleB] || 0) -
-                  (noteRankings[sourceTitleA] || 0)
+                ({ sourceTitle: sourceTitleA }, { sourceTitle: sourceTitleB }) =>
+                  (noteRankings[sourceTitleB] || 0) - (noteRankings[sourceTitleA] || 0),
               )
-          : []
+          : [],
       );
       if (newContents !== notes[notePath].noteContents) {
-        await fs.promises.writeFile(
-          path.join(baseNotePath, path.basename(notePath)),
-          newContents,
-          { encoding: "utf-8" }
-        );
+        await fs.promises.writeFile(path.join(baseNotePath, path.basename(notePath)), newContents, {
+          encoding: 'utf-8',
+        });
       }
-    })
+    }),
   );
 })();

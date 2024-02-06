@@ -2,8 +2,8 @@ import type { RootContent, BlockContent, Parent, Root } from 'mdast';
 import type { Node } from 'unist';
 import { visitParents } from 'unist-util-visit-parents';
 
-import getBacklinksBlock from './getBacklinksBlock';
-import { WikiLinkNode } from './WikiLinkNode';
+import getBacklinksBlock from './getBacklinksBlock.js';
+import { WikiLinkNode } from './WikiLinkNode.js';
 
 const blockTypes = ['paragraph', 'heading', 'thematicBreak', 'blockquote', 'list', 'table', 'html', 'code'];
 

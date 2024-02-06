@@ -1,9 +1,9 @@
-import * as MDAST from "mdast";
+import type { Root } from 'mdast';
 
-import { NoteLinkEntry } from "./getNoteLinks";
+import { NoteLinkEntry } from './getNoteLinks.js';
 
 export interface Note {
   title: string;
   links: NoteLinkEntry[];
-  parseTree: MDAST.Root;
+  parseTree: Root;
 }

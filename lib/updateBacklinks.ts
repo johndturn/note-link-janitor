@@ -68,7 +68,7 @@ export default function updateBacklinks(tree: Root, noteContents: string, backli
     //   ],
     // };
 
-    backlinksString = `## Backlinks\n${backlinks
+    backlinksString = `\n## Backlinks\n\n${backlinks
       .map(
         entry =>
           `* [[${entry.sourceTitle}]]\n${entry.context

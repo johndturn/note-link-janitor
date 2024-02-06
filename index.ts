@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import * as fs from 'fs';
-import * as graph from 'pagerank.js';
+import graph from 'pagerank.js';
 import * as path from 'path';
 
 import createLinkMap from './lib/createLinkMap.js';
@@ -25,6 +25,7 @@ import updateBacklinks from './lib/updateBacklinks.js';
       graph.link(linkingNote, note, 1.0);
     }
   }
+
   const noteRankings: { [key: string]: number } = {};
   graph.rank(0.85, 0.000001, function (node, rank) {
     noteRankings[node] = rank;
@@ -33,6 +34,7 @@ import updateBacklinks from './lib/updateBacklinks.js';
   await Promise.all(
     Object.keys(notes).map(async notePath => {
       const backlinks = linkMap.get(notes[notePath].title);
+
       const newContents = updateBacklinks(
         notes[notePath].parseTree,
         notes[notePath].noteContents,
@@ -48,6 +50,7 @@ import updateBacklinks from './lib/updateBacklinks.js';
               )
           : [],
       );
+
       if (newContents !== notes[notePath].noteContents) {
         await fs.promises.writeFile(path.join(baseNotePath, path.basename(notePath)), newContents, {
           encoding: 'utf-8',

@@ -1,6 +1,6 @@
 {
   "name": "@andymatuschak/note-link-janitor",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "author": "Andy Matuschak",
   "main": "out/index.js",
   "license": "MIT",
@@ -14,7 +14,7 @@
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
   },
-  "repository": "andymatuschak/note-link-janitor",
+  "repository": "johndturn/note-link-janitor",
   "dependencies": {
     "pagerank.js": "^1.0.2",
     "remark": "^15.0.1",

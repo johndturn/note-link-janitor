@@ -6,6 +6,7 @@ For example, this text might get added to `Sample note.md`:
 
 ```
 ## Backlinks
+
 * [[Something that links here]]
     * The block of text in the referencing note which contains the link to [[Sample note]].
     * Another block in that same note which links to [[Sample note]].

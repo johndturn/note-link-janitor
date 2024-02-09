@@ -4,14 +4,17 @@ import * as fs from 'fs';
 import graph from 'pagerank.js';
 import * as path from 'path';
 
-import createLinkMap from './lib/createLinkMap.js';
 import readAllNotes from './lib/readAllNotes.js';
+import createLinkMap from './lib/createLinkMap.js';
 import updateBacklinks from './lib/updateBacklinks.js';
 
-(async () => {
+await main();
+
+async function main() {
+  // TODO: Allow for multiple directories to be read
   const baseNotePath = process.argv[2];
   if (!baseNotePath || baseNotePath === '--help') {
-    console.log('Usage: note-link-janitor [NOTE_DIRECTORY]');
+    printUsage();
     return;
   }
 
@@ -58,4 +61,15 @@ import updateBacklinks from './lib/updateBacklinks.js';
       }
     }),
   );
-})();
+}
+
+function printUsage() {
+  console.log('');
+  console.log('Usage: note-link-janitor [NOTE_DIRECTORY]');
+  console.log(
+    '\t- NOTE_DIRECTORY: One or more directories to read .md files from. If multiple are included, please separate them with a comma',
+  );
+  console.log('Ex: note-link-janitor ~/notes');
+  console.log('Ex: note-link-janitor ~/my-project/notes,~/my-project/content,~/my-project/blog');
+  console.log('');
+}

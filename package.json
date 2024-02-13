@@ -1,7 +1,7 @@
 {
-  "name": "@andymatuschak/note-link-janitor",
+  "name": "@johndturn/note-link-janitor",
   "version": "1.0.0",
-  "author": "Andy Matuschak",
+  "author": "John Turner",
   "main": "out/index.js",
   "license": "MIT",
   "type": "module",
@@ -13,16 +13,14 @@
     "eslint": "^8.56.0",
     "prettier": "^3.0.3",
     "ts-node": "^10.9.2",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.2"
   },
   "repository": "johndturn/note-link-janitor",
   "dependencies": {
     "pagerank.js": "^1.0.2",
     "remark": "^15.0.1",
-    "remark-parse": "^11.0.0",
-    "remark-stringify": "^11.0.0",
     "remark-wiki-link": "^2.0.1",
-    "unified": "^11.0.4",
     "unist-util-find": "^3.0.0",
     "unist-util-is": "^6.0.0",
     "unist-util-visit-parents": "^6.0.1"
@@ -32,7 +30,8 @@
   },
   "scripts": {
     "build": "./scripts/build.sh",
-    "backlinks": "./dist/index.js ./tmp-content"
+    "backlinks": "./dist/index.js ./tmp-content",
+    "test": "vitest"
   },
   "bin": {
     "note-link-janitor": "./dist/index.js"

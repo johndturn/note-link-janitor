@@ -11,14 +11,13 @@ import updateBacklinks from './lib/updateBacklinks.js';
 await main();
 
 async function main() {
-  // TODO: Allow for multiple directories to be read
-  const baseNotePath = process.argv[2];
-  if (!baseNotePath || baseNotePath === '--help') {
+  const paths = process.argv.slice(2);
+  if (!paths || paths.length === 0 || paths[0] === '--help') {
     printUsage();
     return;
   }
 
-  const notes = await readAllNotes(baseNotePath);
+  const notes = await readAllNotes(paths);
   const linkMap = createLinkMap(Object.values(notes));
 
   // Sort by PageRank

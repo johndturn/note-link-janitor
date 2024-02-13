@@ -1,13 +1,13 @@
-import RemarkParse from 'remark-parse';
-import RemarkStringify from 'remark-stringify';
-import RemarkWikiLink from 'remark-wiki-link';
-import { unified } from 'unified';
+import { remark } from 'remark';
+import remarkWikiLink from 'remark-wiki-link';
+import { find } from 'unist-util-find';
 
-// TODO: adopt the more general parser in incremental-thinking
 // function allLinksHaveTitles() {
 //   const Compiler = this.Compiler;
 //   const visitors = Compiler.prototype.visitors;
 //   const original = visitors.link;
+
+//   console.log({ Compiler, visitors, original });
 
 //   visitors.link = function (linkNode) {
 //     return original.bind(this)({
@@ -17,17 +17,16 @@ import { unified } from 'unified';
 //   };
 // }
 
-const processor = unified()
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  .use(RemarkParse as any, { commonmark: true, pedantic: true })
-  .use(RemarkStringify, {
-    bullet: '*',
-    emphasis: '_',
-    listItemIndent: 'one',
-    rule: '-',
-    ruleSpaces: false,
-  })
-  // .use(allLinksHaveTitles)
-  .use(RemarkWikiLink);
+export function getProcessor() {
+  return (
+    remark()
+      // .use(allLinksHaveTitles)
+      .use(remarkWikiLink)
+  );
+}
 
-export default processor;
+export function getHeadingFinder() {
+  const missingTitleSentinel = { type: 'missingTitle' } as const;
+
+  return getProcessor().use(() => tree => find(tree, { type: 'heading', depth: 1 }) || missingTitleSentinel);
+}

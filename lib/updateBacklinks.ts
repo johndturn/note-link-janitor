@@ -35,8 +35,21 @@ export default function updateBacklinks(tree: Root, noteContents: string, backli
   let backlinksString = '';
   if (backlinks.length > 0) {
     const processor = getProcessor();
+    const backlinksHeading = `\n## ${backlinksSectionTitle}\n\n`;
+    const backlinksList = prepareBacklinksList(backlinks, processor);
+    backlinksString = `${backlinksHeading}${backlinksList}\n`;
+  }
 
-    backlinksString = `\n## ${backlinksSectionTitle}\n\n${backlinks
+  const newNoteContents = noteContents.slice(0, insertionOffset) + backlinksString + noteContents.slice(oldEndOffset);
+  return newNoteContents;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function prepareBacklinksList(backlinks: BacklinkEntry[], processor: any): string {
+  const shouldIncludeContext = config?.config?.noteLinkJanitor?.includeContextInBacklinks ?? true;
+
+  if (shouldIncludeContext) {
+    return backlinks
       .map(
         entry =>
           `* [[${entry.sourceTitle}]]\n${entry.context
@@ -46,9 +59,8 @@ export default function updateBacklinks(tree: Root, noteContents: string, backli
             .map(block => `\t* ${processor.stringify(block as Root).replace(/\n.+/, '')}\n`)
             .join('')}`,
       )
-      .join('')}\n`;
+      .join('');
   }
 
-  const newNoteContents = noteContents.slice(0, insertionOffset) + backlinksString + noteContents.slice(oldEndOffset);
-  return newNoteContents;
+  return backlinks.map(entry => `* [[${entry.sourceTitle}]]\n`).join('');
 }

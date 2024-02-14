@@ -40,7 +40,7 @@
     "noteLinkJanitor": {
       "backlinksTitle": "References",
       "includeContextInBacklinks": false,
-      "enableLogging": true
+      "enableLogging": false
     }
   },
   "files": [

@@ -48,6 +48,8 @@ export default function updateBacklinks(tree: Root, noteContents: string, backli
 function prepareBacklinksList(backlinks: BacklinkEntry[], processor: any): string {
   const shouldIncludeContext = config?.config?.noteLinkJanitor?.includeContextInBacklinks ?? true;
 
+  // TODO: Alias the raw file of the link with the title of the note if possible
+
   if (shouldIncludeContext) {
     return backlinks
       .map(

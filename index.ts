@@ -17,6 +17,13 @@ async function main() {
   }
 
   const notes = await readAllNotes(paths);
+
+  // NOTE: We need this later to look up the valid title of a given note
+  const notesByFilename = Object.values(notes).reduce((acc, note) => {
+    acc[note.fileNameNoExt] = note;
+    return acc;
+  });
+
   const linkMap = createLinkMap(Object.values(notes));
 
   // Sort by PageRank
@@ -35,17 +42,20 @@ async function main() {
   await Promise.all(
     Object.keys(notes).map(async notePath => {
       const note = notes[notePath];
-      const noteTitleNoFileExtension = note.fileName.replace(/\.md$/, '');
-      const backlinks = linkMap.get(noteTitleNoFileExtension);
+      const backlinks = linkMap.get(note.fileNameNoExt);
 
       const backlinkEntries = backlinks
         ? [...backlinks.keys()]
-            .map(sourceTitle => ({
-              sourceTitle,
-              context: backlinks.get(sourceTitle)!,
-            }))
+            .map(sourceNoteName => {
+              const sourceNoteTitle = notesByFilename[sourceNoteName].title;
+              return {
+                sourceNoteName,
+                sourceNoteTitle,
+                context: backlinks.get(sourceNoteName)!,
+              };
+            })
             .sort(
-              ({ sourceTitle: sourceTitleA }, { sourceTitle: sourceTitleB }) =>
+              ({ sourceNoteName: sourceTitleA }, { sourceNoteName: sourceTitleB }) =>
                 (noteRankings[sourceTitleB] || 0) - (noteRankings[sourceTitleA] || 0),
             )
         : [];

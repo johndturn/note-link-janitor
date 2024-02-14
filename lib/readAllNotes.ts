@@ -7,7 +7,7 @@ import { getProcessor, getHeadingFinder } from './processor.js';
 
 export interface Note {
   title: string;
-  fileName: string;
+  fileNameNoExt: string;
   notePath: string;
   links: NoteLinkEntry[];
   noteContents: string;
@@ -15,7 +15,7 @@ export interface Note {
 }
 
 export default async function readAllNotes(noteFolderPaths: string[]): Promise<{ [key: string]: Note }> {
-  const notesForPath: { [key: string]: Note } = {};
+  const noteByPath: { [key: string]: Note } = {};
 
   for (const noteFolderPath of noteFolderPaths) {
     const noteDirectoryEntries = await fs.promises.readdir(noteFolderPath, {
@@ -24,15 +24,15 @@ export default async function readAllNotes(noteFolderPaths: string[]): Promise<{
 
     const noteFileNames = noteDirectoryEntries
       .filter(entry => entry.isFile() && !entry.name.startsWith('.') && entry.name.endsWith('.md'))
-      .map(entry => entry.name);
+      .map(entry => entry.name.replace(/\.md$/, ''));
 
     for (const noteFileName of noteFileNames) {
       const note = await readNote(noteFileName, noteFolderPath);
-      notesForPath[note.notePath] = note;
+      noteByPath[note.notePath] = note;
     }
   }
 
-  return notesForPath;
+  return noteByPath;
 }
 
 async function readNote(noteName: string, noteFolderPath: string): Promise<Note> {
@@ -55,5 +55,5 @@ async function readNote(noteName: string, noteFolderPath: string): Promise<Note>
 
   const links = getNoteLinks(parseTree);
 
-  return { title, fileName: noteName, notePath, links, parseTree, noteContents };
+  return { title, fileNameNoExt: noteName, notePath, links, parseTree, noteContents };
 }

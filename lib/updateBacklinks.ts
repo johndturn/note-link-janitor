@@ -6,7 +6,8 @@ import { getConfigFromPackageJson } from './getConfigFromPackage.js';
 import { getProcessor } from './processor.js';
 
 export interface BacklinkEntry {
-  sourceTitle: string;
+  sourceNoteName: string;
+  sourceNoteTitle: string;
   context: BlockContent[];
 }
 
@@ -54,7 +55,7 @@ function prepareBacklinksList(backlinks: BacklinkEntry[], processor: any): strin
     return backlinks
       .map(
         entry =>
-          `* [[${entry.sourceTitle}]]\n${entry.context
+          `* [[${entry.sourceNoteName}|${entry.sourceNoteTitle}]]\n${entry.context
             // TODO: Figure out the typing issue here
             // eslint-disable-next-line
             // @ts-expect-error
@@ -64,5 +65,5 @@ function prepareBacklinksList(backlinks: BacklinkEntry[], processor: any): strin
       .join('');
   }
 
-  return backlinks.map(entry => `* [[${entry.sourceTitle}]]\n`).join('');
+  return backlinks.map(entry => `* [[${entry.sourceNoteName}|${entry.sourceNoteTitle}]]\n`).join('');
 }

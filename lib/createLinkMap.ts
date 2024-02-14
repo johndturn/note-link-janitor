@@ -15,7 +15,7 @@ export default function createLinkMap(notes: Note[]) {
         linkMap.set(targetTitle, backlinkEntryMap);
       }
 
-      const backlinkEntryMapKey = note.fileName.replace(/\.md$/, '');
+      const backlinkEntryMapKey = note.fileNameNoExt;
       let contextList = backlinkEntryMap.get(backlinkEntryMapKey);
       if (!contextList) {
         contextList = [];

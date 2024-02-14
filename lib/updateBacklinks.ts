@@ -37,7 +37,7 @@ export default function updateBacklinks(tree: Root, noteContents: string, backli
     const processor = getProcessor();
     const backlinksHeading = `\n## ${backlinksSectionTitle}\n\n`;
     const backlinksList = prepareBacklinksList(backlinks, processor);
-    backlinksString = `${backlinksHeading}${backlinksList}\n`;
+    backlinksString = `${backlinksHeading}${backlinksList}`;
   }
 
   const newNoteContents = noteContents.slice(0, insertionOffset) + backlinksString + noteContents.slice(oldEndOffset);

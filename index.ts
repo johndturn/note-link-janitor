@@ -27,8 +27,6 @@ async function main() {
     }
   }
 
-  console.log(linkMap);
-
   const noteRankings: { [key: string]: number } = {};
   graph.rank(0.85, 0.000001, function (node, rank) {
     noteRankings[node] = rank;

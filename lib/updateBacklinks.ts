@@ -16,8 +16,6 @@ export default function updateBacklinks(tree: Root, noteContents: string, backli
   let insertionOffset: number;
   let oldEndOffset: number = -1;
 
-  console.log('packageJson', packageJson);
-
   const backlinksSectionTitle = packageJson?.default?.config?.noteLinkJanitor?.backlinksTitle ?? 'References';
 
   const backlinksInfo = getBacklinksBlock(tree);

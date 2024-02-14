@@ -30,7 +30,7 @@
   },
   "scripts": {
     "build": "./scripts/build.sh",
-    "backlinks": "./dist/index.js ./tmp-content",
+    "test-dist": "node index.js ./tests/test-data-1 ./tests/test-data-2",
     "test": "vitest"
   },
   "bin": {

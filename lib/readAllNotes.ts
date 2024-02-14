@@ -24,7 +24,7 @@ export default async function readAllNotes(noteFolderPaths: string[]): Promise<{
 
     const noteFileNames = noteDirectoryEntries
       .filter(entry => entry.isFile() && !entry.name.startsWith('.') && entry.name.endsWith('.md'))
-      .map(entry => entry.name.replace(/\.md$/, ''));
+      .map(entry => entry.name);
 
     for (const noteFileName of noteFileNames) {
       const note = await readNote(noteFileName, noteFolderPath);
@@ -55,5 +55,5 @@ async function readNote(noteName: string, noteFolderPath: string): Promise<Note>
 
   const links = getNoteLinks(parseTree);
 
-  return { title, fileNameNoExt: noteName, notePath, links, parseTree, noteContents };
+  return { title, fileNameNoExt: noteName.replace(/\.md$/, ''), notePath, links, parseTree, noteContents };
 }

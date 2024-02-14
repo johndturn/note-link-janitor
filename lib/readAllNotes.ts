@@ -7,6 +7,7 @@ import { getProcessor, getHeadingFinder } from './processor.js';
 
 interface Note {
   title: string;
+  notePath: string;
   links: NoteLinkEntry[];
   noteContents: string;
   parseTree: Root;
@@ -50,5 +51,7 @@ async function readNote(notePath: string): Promise<Note> {
     .stringify({ type: 'root', children: (headingNode as Heading).children })
     .trimEnd();
 
-  return { title, links: getNoteLinks(parseTree), parseTree, noteContents };
+  const links = getNoteLinks(parseTree);
+
+  return { title, notePath, links, parseTree, noteContents };
 }

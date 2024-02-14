@@ -58,5 +58,6 @@ export default function getNoteLinks(tree: Root): NoteLinkEntry[] {
       return true;
     },
   );
+
   return links;
 }

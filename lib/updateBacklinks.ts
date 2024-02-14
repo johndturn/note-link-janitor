@@ -2,7 +2,7 @@
 import type { Root, BlockContent } from 'mdast';
 
 import getBacklinksBlock from './getBacklinksBlock.js';
-import processor from './processor.js';
+import { getProcessor } from './processor.js';
 
 export interface BacklinkEntry {
   sourceTitle: string;
@@ -29,44 +29,7 @@ export default function updateBacklinks(tree: Root, noteContents: string, backli
 
   let backlinksString = '';
   if (backlinks.length > 0) {
-    // const backlinkNodes: ListItem[] = backlinks.map(entry => ({
-    //   type: 'listItem',
-    //   spread: false,
-    //   children: [
-    //     {
-    //       type: 'paragraph',
-    //       children: [
-    //         {
-    //           type: 'wikiLink',
-    //           value: entry.sourceTitle,
-    //           data: { alias: entry.sourceTitle },
-    //         } as unknown as PhrasingContent,
-    //       ],
-    //     },
-    //     {
-    //       type: 'list',
-    //       ordered: false,
-    //       spread: false,
-    //       children: entry.context.map(block => ({
-    //         type: 'listItem',
-    //         spread: false,
-    //         children: [block],
-    //       })),
-    //     },
-    //   ],
-    // }));
-
-    // const backlinkContainer = {
-    //   type: 'root',
-    //   children: [
-    //     {
-    //       type: 'list',
-    //       ordered: false,
-    //       spread: false,
-    //       children: backlinkNodes,
-    //     },
-    //   ],
-    // };
+    const processor = getProcessor();
 
     backlinksString = `\n## Backlinks\n\n${backlinks
       .map(
@@ -82,6 +45,5 @@ export default function updateBacklinks(tree: Root, noteContents: string, backli
   }
 
   const newNoteContents = noteContents.slice(0, insertionOffset) + backlinksString + noteContents.slice(oldEndOffset);
-
   return newNoteContents;
 }

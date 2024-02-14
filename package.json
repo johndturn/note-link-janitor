@@ -36,6 +36,11 @@
   "bin": {
     "note-link-janitor": "./dist/index.js"
   },
+  "config": {
+    "note-link-janitor": {
+      "backlinksTitle": "References"
+    }
+  },
   "files": [
     "README.md",
     "dist/**/*"

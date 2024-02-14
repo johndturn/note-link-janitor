@@ -2,6 +2,7 @@ import { remark } from 'remark';
 import remarkWikiLink from 'remark-wiki-link';
 import { find } from 'unist-util-find';
 
+// TODO: Fix this so it actually works with the new version of the unified stack
 // function allLinksHaveTitles() {
 //   const Compiler = this.Compiler;
 //   const visitors = Compiler.prototype.visitors;

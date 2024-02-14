@@ -2,6 +2,8 @@ import type { Node } from 'unist';
 import type { Html, Root, Heading } from 'mdast';
 import { is } from 'unist-util-is';
 
+import { getConfigFromPackageJson } from './getConfigFromPackage.js';
+
 // Hacky type predicate here.
 function isClosingMatterNode(node: Node): node is Node {
   return 'value' in node && (node as Html).value.startsWith('<!--');
@@ -18,13 +20,15 @@ type BacklinksBlockNotPresent = {
   insertionPoint: Node | null;
 };
 
+const config = await getConfigFromPackageJson(0);
+
 export default function getBacklinksBlock(tree: Root): BacklinksBlockPresent | BacklinksBlockNotPresent {
   const existingBacklinksNodeIndex = tree.children.findIndex(
     (node: Node): node is Heading =>
       is(node, {
         type: 'heading',
         depth: 2,
-      }) && is((node as Heading).children[0], { value: 'Backlinks' }),
+      }) && is((node as Heading).children[0], { value: config['config']['note-link-janitor']['backlinksTitle'] }),
   );
 
   if (existingBacklinksNodeIndex === -1) {
@@ -33,6 +37,7 @@ export default function getBacklinksBlock(tree: Root): BacklinksBlockPresent | B
         .slice()
         .reverse()
         .find(node => is(node, isClosingMatterNode)) || null;
+
     return {
       isPresent: false,
       insertionPoint,
@@ -42,6 +47,7 @@ export default function getBacklinksBlock(tree: Root): BacklinksBlockPresent | B
       tree.children
         .slice(existingBacklinksNodeIndex + 1)
         .find(node => is(node, [{ type: 'heading' }, isClosingMatterNode])) || null;
+
     return {
       isPresent: true,
       start: tree.children[existingBacklinksNodeIndex],

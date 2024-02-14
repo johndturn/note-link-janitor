@@ -1,8 +1,7 @@
 #!/usr/bin/env node
 
-import * as fs from 'fs';
+import fs from 'fs';
 import graph from 'pagerank.js';
-import * as path from 'path';
 
 import readAllNotes from './lib/readAllNotes.js';
 import createLinkMap from './lib/createLinkMap.js';
@@ -35,26 +34,29 @@ async function main() {
 
   await Promise.all(
     Object.keys(notes).map(async notePath => {
+      const note = notes[notePath];
+
+      console.log('>>> Working on the note: ', notePath);
+      console.log('>>> Note: ', note);
+
       const backlinks = linkMap.get(notes[notePath].title);
 
-      const newContents = updateBacklinks(
-        notes[notePath].parseTree,
-        notes[notePath].noteContents,
-        backlinks
-          ? [...backlinks.keys()]
-              .map(sourceTitle => ({
-                sourceTitle,
-                context: backlinks.get(sourceTitle)!,
-              }))
-              .sort(
-                ({ sourceTitle: sourceTitleA }, { sourceTitle: sourceTitleB }) =>
-                  (noteRankings[sourceTitleB] || 0) - (noteRankings[sourceTitleA] || 0),
-              )
-          : [],
-      );
+      const backlinkEntries = backlinks
+        ? [...backlinks.keys()]
+            .map(sourceTitle => ({
+              sourceTitle,
+              context: backlinks.get(sourceTitle)!,
+            }))
+            .sort(
+              ({ sourceTitle: sourceTitleA }, { sourceTitle: sourceTitleB }) =>
+                (noteRankings[sourceTitleB] || 0) - (noteRankings[sourceTitleA] || 0),
+            )
+        : [];
+
+      const newContents = updateBacklinks(notes[notePath].parseTree, notes[notePath].noteContents, backlinkEntries);
 
       if (newContents !== notes[notePath].noteContents) {
-        await fs.promises.writeFile(path.join(baseNotePath, path.basename(notePath)), newContents, {
+        await fs.promises.writeFile(note.notePath, newContents, {
           encoding: 'utf-8',
         });
       }
@@ -66,9 +68,9 @@ function printUsage() {
   console.log('');
   console.log('Usage: note-link-janitor [NOTE_DIRECTORY]');
   console.log(
-    '\t- NOTE_DIRECTORY: One or more directories to read .md files from. If multiple are included, please separate them with a comma',
+    '\t- NOTE_DIRECTORY: One or more directories to read .md files from. If multiple are included, please separate them with a space',
   );
   console.log('Ex: note-link-janitor ~/notes');
-  console.log('Ex: note-link-janitor ~/my-project/notes,~/my-project/content,~/my-project/blog');
+  console.log('Ex: note-link-janitor ~/my-project/notes ~/my-project/content ~/my-project/blog');
   console.log('');
 }

@@ -57,6 +57,9 @@ export default function getNoteLinks(tree: Root): NoteLinkEntry[] {
         linkText = linkText.split('|')[0];
       }
 
+      // NOTE: Personally I keep all of my notes uniquely named and also lowercase
+      linkText = linkText.toLowerCase();
+
       links.push({
         targetTitle: linkText,
         context: closestBlockLevelAncestor,

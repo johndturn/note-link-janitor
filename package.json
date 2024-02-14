@@ -39,7 +39,8 @@
   "config": {
     "noteLinkJanitor": {
       "backlinksTitle": "References",
-      "includeContextInBacklinks": false
+      "includeContextInBacklinks": false,
+      "enableLogging": true
     }
   },
   "files": [

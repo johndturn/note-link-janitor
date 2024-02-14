@@ -6,6 +6,9 @@ import graph from 'pagerank.js';
 import readAllNotes from './lib/readAllNotes.js';
 import createLinkMap from './lib/createLinkMap.js';
 import updateBacklinks from './lib/updateBacklinks.js';
+import { getConfigFromPackageJson } from './lib/getConfigFromPackage.js';
+
+const packageJson = await getConfigFromPackageJson(1);
 
 await main();
 
@@ -16,15 +19,33 @@ async function main() {
     return;
   }
 
+  const enableLogging = packageJson?.default?.config?.noteLinkJanitor?.enableLogging ?? false;
+
+  if (enableLogging) {
+    console.log('>>> Reading notes from:', paths);
+  }
+
   const notes = await readAllNotes(paths);
+
+  if (enableLogging) {
+    // console.log('Read notes:', notes);
+  }
 
   // NOTE: We need this later to look up the valid title of a given note
   const notesByFilename = Object.values(notes).reduce((acc, note) => {
     acc[note.fileNameNoExt] = note;
     return acc;
-  });
+  }, {});
+
+  if (enableLogging) {
+    console.log('>>> Notes by filename:', Object.keys(notesByFilename));
+  }
 
   const linkMap = createLinkMap(Object.values(notes));
+
+  if (enableLogging) {
+    console.log('>>> Link Map:', linkMap);
+  }
 
   // Sort by PageRank
   for (const note of linkMap.keys()) {
@@ -47,13 +68,25 @@ async function main() {
       const backlinkEntries = backlinks
         ? [...backlinks.keys()]
             .map(sourceNoteName => {
-              const sourceNoteTitle = notesByFilename[sourceNoteName].title;
+              const note = notesByFilename[sourceNoteName];
+              if (enableLogging) {
+                console.log('Note found while generating backlinks:', note?.title);
+              }
+
+              const sourceNoteTitle = note?.title;
+
+              if (!sourceNoteTitle) {
+                console.log('>>> Link found for a note that does not exist:', sourceNoteName);
+                return { sourceNoteName: '', sourceNoteTitle: '', context: [] };
+              }
+
               return {
                 sourceNoteName,
                 sourceNoteTitle,
                 context: backlinks.get(sourceNoteName)!,
               };
             })
+            .filter(entry => entry.sourceNoteTitle && entry.sourceNoteName && entry.context)
             .sort(
               ({ sourceNoteName: sourceTitleA }, { sourceNoteName: sourceTitleB }) =>
                 (noteRankings[sourceTitleB] || 0) - (noteRankings[sourceTitleA] || 0),

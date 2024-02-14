@@ -39,7 +39,7 @@ async function main() {
       console.log('>>> Working on the note: ', notePath);
       console.log('>>> Note: ', note);
 
-      const backlinks = linkMap.get(notes[notePath].title);
+      const backlinks = linkMap.get(note.title);
 
       const backlinkEntries = backlinks
         ? [...backlinks.keys()]

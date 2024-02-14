@@ -7,6 +7,7 @@ import { getProcessor, getHeadingFinder } from './processor.js';
 
 interface Note {
   title: string;
+  fileName: string;
   notePath: string;
   links: NoteLinkEntry[];
   noteContents: string;
@@ -21,20 +22,21 @@ export default async function readAllNotes(noteFolderPaths: string[]): Promise<{
       withFileTypes: true,
     });
 
-    const notePaths = noteDirectoryEntries
+    const noteFileNames = noteDirectoryEntries
       .filter(entry => entry.isFile() && !entry.name.startsWith('.') && entry.name.endsWith('.md'))
-      .map(entry => path.join(noteFolderPath, entry.name));
+      .map(entry => entry.name);
 
-    for (const notePath of notePaths) {
-      const note = await readNote(notePath);
-      notesForPath[notePath] = note;
+    for (const noteFileName of noteFileNames) {
+      const note = await readNote(noteFileName, noteFolderPath);
+      notesForPath[note.notePath] = note;
     }
   }
 
   return notesForPath;
 }
 
-async function readNote(notePath: string): Promise<Note> {
+async function readNote(noteName: string, noteFolderPath: string): Promise<Note> {
+  const notePath = path.join(noteFolderPath, noteName);
   const noteContents = await fs.promises.readFile(notePath, {
     encoding: 'utf-8',
   });
@@ -44,7 +46,7 @@ async function readNote(notePath: string): Promise<Note> {
 
   const headingNode = await getHeadingFinder().run(parseTree);
   if (headingNode.type === 'missingTitle') {
-    throw new Error(`${notePath} has no title`);
+    throw new Error(`${noteName} has no title`);
   }
 
   const title = processor()
@@ -53,5 +55,5 @@ async function readNote(notePath: string): Promise<Note> {
 
   const links = getNoteLinks(parseTree);
 
-  return { title, notePath, links, parseTree, noteContents };
+  return { title, fileName: noteName, notePath, links, parseTree, noteContents };
 }

@@ -55,9 +55,11 @@ async function main() {
       const newContents = updateBacklinks(notes[notePath].parseTree, notes[notePath].noteContents, backlinkEntries);
 
       if (newContents !== notes[notePath].noteContents) {
-        await fs.promises.writeFile(note.notePath, newContents, {
-          encoding: 'utf-8',
-        });
+        console.log('>>> Going to update the file!!');
+        console.log(newContents);
+        // await fs.promises.writeFile(note.notePath, newContents, {
+        //   encoding: 'utf-8',
+        // });
       }
     }),
   );

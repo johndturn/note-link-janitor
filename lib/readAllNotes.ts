@@ -5,7 +5,7 @@ import * as path from 'path';
 import getNoteLinks, { NoteLinkEntry } from './getNoteLinks.js';
 import { getProcessor, getHeadingFinder } from './processor.js';
 
-interface Note {
+export interface Note {
   title: string;
   fileName: string;
   notePath: string;

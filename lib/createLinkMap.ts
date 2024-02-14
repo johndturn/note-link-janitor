@@ -1,6 +1,6 @@
 import type { BlockContent } from 'mdast';
 
-import type { Note } from './Note.js';
+import type { Note } from './readAllNotes.js';
 
 export default function createLinkMap(notes: Note[]) {
   const linkMap: Map<string, Map<string, BlockContent[]>> = new Map();
@@ -15,10 +15,11 @@ export default function createLinkMap(notes: Note[]) {
         linkMap.set(targetTitle, backlinkEntryMap);
       }
 
-      let contextList = backlinkEntryMap.get(note.title);
+      const backlinkEntryMapKey = note.fileName.replace(/\.md$/, '');
+      let contextList = backlinkEntryMap.get(backlinkEntryMapKey);
       if (!contextList) {
         contextList = [];
-        backlinkEntryMap.set(note.title, contextList);
+        backlinkEntryMap.set(backlinkEntryMapKey, contextList);
       }
 
       if (link.context) {

@@ -27,6 +27,8 @@ async function main() {
     }
   }
 
+  console.log(linkMap);
+
   const noteRankings: { [key: string]: number } = {};
   graph.rank(0.85, 0.000001, function (node, rank) {
     noteRankings[node] = rank;
@@ -35,11 +37,8 @@ async function main() {
   await Promise.all(
     Object.keys(notes).map(async notePath => {
       const note = notes[notePath];
-
-      console.log('>>> Working on the note: ', notePath);
-      console.log('>>> Note: ', note);
-
-      const backlinks = linkMap.get(note.title);
+      const noteTitleNoFileExtension = note.fileName.replace(/\.md$/, '');
+      const backlinks = linkMap.get(noteTitleNoFileExtension);
 
       const backlinkEntries = backlinks
         ? [...backlinks.keys()]

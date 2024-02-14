@@ -50,8 +50,15 @@ export default function getNoteLinks(tree: Root): NoteLinkEntry[] {
         null,
       );
 
+      // NOTE: In order to support wikilinks that have true aliases, we have to
+      // remove the pipe character and any text after it in the node.data.alias string
+      let linkText = node.data.alias;
+      if (linkText && linkText.includes('|')) {
+        linkText = linkText.split('|')[0];
+      }
+
       links.push({
-        targetTitle: (node as unknown as WikiLinkNode).data.alias,
+        targetTitle: linkText,
         context: closestBlockLevelAncestor,
       });
 

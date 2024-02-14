@@ -10,13 +10,15 @@ export interface BacklinkEntry {
   context: BlockContent[];
 }
 
-const config = await getConfigFromPackageJson(1);
+const packageJson = await getConfigFromPackageJson(1);
 
 export default function updateBacklinks(tree: Root, noteContents: string, backlinks: BacklinkEntry[]): string {
   let insertionOffset: number;
   let oldEndOffset: number = -1;
 
-  const backlinksSectionTitle = config?.config?.noteLinkJanitor?.backlinksTitle || 'References';
+  console.log('packageJson', packageJson);
+
+  const backlinksSectionTitle = packageJson?.default?.config?.noteLinkJanitor?.backlinksTitle ?? 'References';
 
   const backlinksInfo = getBacklinksBlock(tree);
   if (backlinksInfo.isPresent) {
@@ -46,7 +48,7 @@ export default function updateBacklinks(tree: Root, noteContents: string, backli
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function prepareBacklinksList(backlinks: BacklinkEntry[], processor: any): string {
-  const shouldIncludeContext = config?.config?.noteLinkJanitor?.includeContextInBacklinks ?? true;
+  const shouldIncludeContext = packageJson?.default?.config?.noteLinkJanitor?.includeContextInBacklinks ?? true;
 
   // TODO: Alias the raw file of the link with the title of the note if possible
 

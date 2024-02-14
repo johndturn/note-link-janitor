@@ -30,14 +30,14 @@
   },
   "scripts": {
     "build": "./scripts/build.sh",
-    "test-dist": "node index.js ./tests/test-data-1 ./tests/test-data-2",
+    "test-dist": "node ./dist/index.js ./tests/test-data-1 ./tests/test-data-2",
     "test": "vitest"
   },
   "bin": {
     "note-link-janitor": "./dist/index.js"
   },
   "config": {
-    "note-link-janitor": {
+    "noteLinkJanitor": {
       "backlinksTitle": "References"
     }
   },

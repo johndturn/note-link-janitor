@@ -2,6 +2,7 @@
 import type { Root, BlockContent } from 'mdast';
 
 import getBacklinksBlock from './getBacklinksBlock.js';
+import { getConfigFromPackageJson } from './getConfigFromPackage.js';
 import { getProcessor } from './processor.js';
 
 export interface BacklinkEntry {
@@ -9,9 +10,13 @@ export interface BacklinkEntry {
   context: BlockContent[];
 }
 
+const config = await getConfigFromPackageJson(1);
+
 export default function updateBacklinks(tree: Root, noteContents: string, backlinks: BacklinkEntry[]): string {
   let insertionOffset: number;
   let oldEndOffset: number = -1;
+
+  const backlinksSectionTitle = config?.config?.noteLinkJanitor?.backlinksTitle || 'References';
 
   const backlinksInfo = getBacklinksBlock(tree);
   if (backlinksInfo.isPresent) {
@@ -31,7 +36,7 @@ export default function updateBacklinks(tree: Root, noteContents: string, backli
   if (backlinks.length > 0) {
     const processor = getProcessor();
 
-    backlinksString = `\n## Backlinks\n\n${backlinks
+    backlinksString = `\n## ${backlinksSectionTitle}\n\n${backlinks
       .map(
         entry =>
           `* [[${entry.sourceTitle}]]\n${entry.context

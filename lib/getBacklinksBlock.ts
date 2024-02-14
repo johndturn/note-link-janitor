@@ -20,15 +20,16 @@ type BacklinksBlockNotPresent = {
   insertionPoint: Node | null;
 };
 
-const config = await getConfigFromPackageJson(0);
+const config = await getConfigFromPackageJson(1);
 
 export default function getBacklinksBlock(tree: Root): BacklinksBlockPresent | BacklinksBlockNotPresent {
+  const backlinksSectionTitle = config?.config?.noteLinkJanitor?.backlinksTitle || 'References';
   const existingBacklinksNodeIndex = tree.children.findIndex(
     (node: Node): node is Heading =>
       is(node, {
         type: 'heading',
         depth: 2,
-      }) && is((node as Heading).children[0], { value: config['config']['note-link-janitor']['backlinksTitle'] }),
+      }) && is((node as Heading).children[0], { value: backlinksSectionTitle }),
   );
 
   if (existingBacklinksNodeIndex === -1) {

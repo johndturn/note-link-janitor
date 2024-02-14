@@ -7,14 +7,11 @@ export async function getConfigFromPackageJson(attempts) {
   const mainPath = attempts === 1 ? './' : Array(attempts).join('../');
   const fullPath = mainPath + 'package.json';
 
-  console.log('Trying to load package.json from', fullPath);
-
   try {
     return await import(fullPath, {
-      with: { type: 'json' },
+      assert: { type: 'json' },
     });
   } catch (e) {
-    console.error('Failed to load package.json from', fullPath, e);
     return getConfigFromPackageJson(attempts + 1);
   }
 }

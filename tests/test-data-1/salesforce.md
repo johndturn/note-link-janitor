@@ -10,11 +10,3 @@ last_modified: 2024-01-06T22:49:50-07:00
 ---
 
 # Salesforce
-
-
-## Backlinks
-
-* [[Salesforce Deployments]]
-	* Thoughts on how to improve [[Salesforce]] Deployments and our [[DevOps]] practices
-
-
